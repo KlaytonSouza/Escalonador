@@ -10,7 +10,7 @@ public class FachadaEscalonador {
 	private ArrayList<String> listaProcesso;
 	private String rodando;
 	private ArrayList<String> processoBloqueado;
-	private String klayton = "";
+	private String tempo;
 
 	public FachadaEscalonador(TipoEscalonador tipoEscalonador) {
 		this.quantm = 3;
@@ -25,20 +25,28 @@ public class FachadaEscalonador {
 	}
 
 	public String getStatus() {
-		if (this.listaProcesso.size() == 0) {
-			return ("Escalonador " + this.tipoEscalonador + ";" + "Processos: {" + this.rodando + klayton +"};"
-					+ "Quantum: " + this.quantm + ";" + "Tick: " + this.tick);
+		if (this.listaProcesso.size() != 0 && tempo != listaProcesso.get(0)) {
+			return ("Escalonador " + this.tipoEscalonador + ";" 
+		+ "Processos: {Fila: " + this.listaProcesso.toString() + "};" 
+		+ "Quantum: " + this.quantm + ";" 
+		+ "Tick: " + this.tick);			
 		} else {
-			return ("Escalonador " + this.tipoEscalonador + ";" + "Processos: {Fila: " + this.listaProcesso.toString()
-					+ "};" + "Quantum: " + this.quantm + ";" + "Tick: " + this.tick);
+			return ("Escalonador " + this.tipoEscalonador + ";" 
+			+ "Processos: {" + this.rodando + "};"
+			+ "Quantum: " + this.quantm + ";" 
+				+ "Tick: " + this.tick);
 		}
 	}
 
 	public void tick() {
 		this.tick++;
-		if(this.listaProcesso.size() != 0) {
+		if(this.listaProcesso.size() != 0){
 			this.rodando = "Rodando: "+this.listaProcesso.get(0);
-			this.listaProcesso.remove(0);
+			tempo = listaProcesso.get(0);
+		
+		}else {
+			this.rodando = "";
+			this.tempo = "";
 		}
 	}
 
@@ -47,17 +55,15 @@ public class FachadaEscalonador {
 	}
 
 	public void finalizarProcesso(String nomeProcesso) {
-		boolean testeProcesso = true;
-		
-		for(String x: this.listaProcesso) {
-			if(x == nomeProcesso) {
-				testeProcesso = false;
-				this.klayton = x;
-				this.listaProcesso.remove(x);
+		int nomeProcessoEncontrado = -1;
+
+		for(int k = 0; k<listaProcesso.size(); k++) {
+			if(listaProcesso.get(k).equals(nomeProcesso)) {
+				nomeProcessoEncontrado = k;				
 			}
-		}if(testeProcesso)
-			this.rodando = "Rodando: ";
-		
+		}if(nomeProcessoEncontrado >= 0) {
+			listaProcesso.remove(nomeProcessoEncontrado);
+		}
 	}
 
 	public void bloquearProcesso(String nomeProcesso) {
