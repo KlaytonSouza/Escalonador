@@ -3,6 +3,8 @@ package br.ufpb.dcx.aps.escalonador;
 import java.util.ArrayList;
 
 public class FachadaEscalonador {
+	
+	private int tick;
 
 	private int quantm;
 	private int tick;
@@ -48,10 +50,13 @@ public class FachadaEscalonador {
 			this.rodando = "";
 			this.tempo = "";
 		}
-	}
+
 
 	public void adicionarProcesso(String nomeProcesso) {
 		listaProcesso.add(nomeProcesso);
+	}
+
+	public void adicionarProcesso(String nomeProcesso, int prioridade) {
 	}
 
 	public void finalizarProcesso(String nomeProcesso) {
