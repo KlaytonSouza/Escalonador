@@ -4,8 +4,6 @@ import java.util.ArrayList;
 
 public class FachadaEscalonador {
 	
-	private int tick;
-
 	private int quantm;
 	private int tick;
 	private TipoEscalonador tipoEscalonador;
@@ -50,6 +48,7 @@ public class FachadaEscalonador {
 			this.rodando = "";
 			this.tempo = "";
 		}
+	}
 
 
 	public void adicionarProcesso(String nomeProcesso) {
