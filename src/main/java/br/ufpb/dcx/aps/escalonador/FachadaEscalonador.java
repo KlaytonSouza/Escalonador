@@ -1,16 +1,19 @@
 package br.ufpb.dcx.aps.escalonador;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class FachadaEscalonador {
 	
+	private TipoEscalonador tipoEscalonador;
 	private int quantm;
 	private int tick;
-	private TipoEscalonador tipoEscalonador;
 	private ArrayList<String> listaProcesso;
-	private String rodando;
 	private ArrayList<String> processoBloqueado;
+	private ArrayList<String> fila;
 	private String tempo;
+	private String rodando;
+	private String resultado = "";
 
 	public FachadaEscalonador(TipoEscalonador tipoEscalonador) {
 		this.quantm = 3;
@@ -25,7 +28,36 @@ public class FachadaEscalonador {
 	}
 
 	public String getStatus() {
-		if (this.listaProcesso.size() != 0 && tempo != listaProcesso.get(0)) {
+		//tipoEscalonador
+		//Escalonador Prioridade;Processos: {Rodando: P1, Fila: [P2]};Quantum: 3;Tick: 1
+		resultado = "Escalonador " + this.tipoEscalonador + ";";
+		
+		if(rodando != "" ) {
+			resultado += "Processos: {Rodando: " + rodando + "};"
+					+ "Quantum: " + this.quantm + ";"
+					+ "Tick: " + this.tick;
+		
+		}
+		if(rodando == "") {
+			resultado += "Processos: {};Quantum: "+this.quantm +";Tick: "+this.tick;
+		}
+		if(rodando != "" && listaProcesso.size() != 0) {
+			resultado += "Processos: {Rodando: " + rodando + ", Fila: " + Arrays.toString(fila) + "};"
+					+ "Quantum: " + this.quantm + ";"
+					+ "Tick: " + this.tick;
+		}
+		
+		return resultado;
+		//Processo
+		//Rodando
+		//Fila
+		//Bloqueado
+		//tick
+		//Quant
+		
+		
+		
+		/*if (this.listaProcesso.size() != 0 && tempo != listaProcesso.get(0)) {
 			return ("Escalonador " + this.tipoEscalonador + ";" 
 		+ "Processos: {Fila: " + this.listaProcesso.toString() + "};" 
 		+ "Quantum: " + this.quantm + ";" 
@@ -35,13 +67,13 @@ public class FachadaEscalonador {
 			+ "Processos: {" + this.rodando + "};"
 			+ "Quantum: " + this.quantm + ";" 
 				+ "Tick: " + this.tick);
-		}
+		}*/
 	}
 
 	public void tick() {
 		this.tick++;
 		if(this.listaProcesso.size() != 0){
-			this.rodando = "Rodando: "+this.listaProcesso.get(0);
+			this.rodando = this.listaProcesso.get(0);
 			tempo = listaProcesso.get(0);
 		
 		}else {
@@ -52,7 +84,10 @@ public class FachadaEscalonador {
 
 
 	public void adicionarProcesso(String nomeProcesso) {
-		listaProcesso.add(nomeProcesso);
+		if(rodando == "" && this.tick > this.quantm) {
+			listaProcesso.add(nomeProcesso);
+		}	
+		rodando = nomeProcesso;
 	}
 
 	public void adicionarProcesso(String nomeProcesso, int prioridade) {
