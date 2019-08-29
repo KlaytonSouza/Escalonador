@@ -6,26 +6,26 @@ import java.util.Queue;
 
 public class FachadaEscalonador {
 
+	private TipoEscalonador tipoEscalonador;
 	private int quantum;
 	private int tick;
-	private TipoEscalonador tipoEscalonador;
-	private Queue<String> listaProcesso;
-	private String rodando;
-	private ArrayList<String> processoBloqueado;
-	private ArrayList<String> temp;
-	private String aFinalizar;
 	private int controlador;
-	private String resultado = "";
+	private Queue<String> listaProcesso;
+	private ArrayList<String> processoBloqueado;
+//private ArrayList<String> temp;
+	private String rodando;
+	private String processoParaSerFinalizado;
+	private String processoParaSerBloqueado;
+	private String processoParaSerRetomado;
 
 	public FachadaEscalonador(TipoEscalonador tipoEscalonador) {
 		this.quantum = 3;
 		this.tick = 0;
-		// this.rodando = "";
+// this.rodando = "";
 		this.tipoEscalonador = tipoEscalonador;
 		this.listaProcesso = new LinkedList<String>();
 		this.processoBloqueado = new ArrayList<String>();
-		this.temp = new ArrayList<String>();
-
+//this.temp = new ArrayList<String>();
 	}
 
 	public FachadaEscalonador(TipoEscalonador roundrobin, int quantum) {
@@ -34,8 +34,8 @@ public class FachadaEscalonador {
 		this.tipoEscalonador = roundrobin;
 		this.listaProcesso = new LinkedList<String>();
 		this.processoBloqueado = new ArrayList<String>();
-		this.temp = new ArrayList<String>();
-		
+//this.temp = new ArrayList<String>();
+
 	}
 
 	public String getStatus() {
@@ -55,10 +55,10 @@ public class FachadaEscalonador {
 				resultado += ", ";
 			}
 			resultado += "Fila: " + this.listaProcesso.toString();
-			if(this.processoBloqueado.size() > 0) {
-				resultado += ", Bloqueados: " + this.processoBloqueado.toString();
-			}
 
+		}
+		if (processoBloqueado.size() > 0) {
+			resultado += ", Bloqueados: " + this.processoBloqueado.toString();
 		}
 		resultado += "};Quantum: " + this.quantum + ";";
 
@@ -75,27 +75,53 @@ public class FachadaEscalonador {
 			this.controlador = this.tick;
 		}
 
-		if (aFinalizar != null) {
-			if (this.rodando == this.aFinalizar) {
+		if (processoParaSerFinalizado != null) {
+			if (this.rodando == this.processoParaSerFinalizado) {
 				this.rodando = null;
-				
+
 			} else {
-				this.listaProcesso.remove(aFinalizar);
+				this.listaProcesso.remove(processoParaSerFinalizado);
 			}
-			
+
 		}
 
 		if (this.rodando == null) {
 			if (this.listaProcesso.size() != 0) {
 				this.rodando = this.listaProcesso.poll();
-				if(listaProcesso.size() > 0) {
+				if (listaProcesso.size() > 0) {
 					this.controlador = this.tick;
 				}
-				
+
 			}
 		}
-		if(this.controlador == 0 && this.rodando != null && listaProcesso.size() > 0) {
+		if (this.controlador == 0 && this.rodando != null && listaProcesso.size() > 0) {
 			this.controlador = this.tick;
+		}
+
+		if (processoParaSerBloqueado != null) {
+			if (this.rodando == this.processoParaSerBloqueado) {
+				this.rodando = null;
+				this.processoBloqueado.add(processoParaSerBloqueado);
+				if (listaProcesso.size() > 0) {
+					rodando = listaProcesso.poll();
+				} else {
+					rodando = null;
+				}
+			} else {
+				this.listaProcesso.remove(processoParaSerBloqueado);
+				this.processoBloqueado.add(processoParaSerBloqueado);
+			}
+			processoParaSerBloqueado = null;
+		}
+
+		if (processoParaSerRetomado != null) {
+			for (int k = 0; k < processoBloqueado.size(); k++) {
+				if (processoBloqueado.get(k) == this.processoParaSerRetomado) {
+					this.processoBloqueado.remove(k);
+					this.listaProcesso.add(processoParaSerRetomado);
+				}
+
+			}
 		}
 
 	}
@@ -109,21 +135,16 @@ public class FachadaEscalonador {
 	}
 
 	public void finalizarProcesso(String nomeProcesso) {
-		this.aFinalizar = nomeProcesso;
+		this.processoParaSerFinalizado = nomeProcesso;
 
 	}
 
 	public void bloquearProcesso(String nomeProcesso) {
-		for(int k = 0; k<listaProcesso.size(); k++) {
-			if(this.listaProcesso.size() > 0) {
-				this.listaProcesso.remove(nomeProcesso);
-				this.processoBloqueado.add(nomeProcesso);
-			}
-		}
-		
+		this.processoParaSerBloqueado = nomeProcesso;
 	}
 
 	public void retomarProcesso(String nomeProcesso) {
+		this.processoParaSerRetomado = nomeProcesso;
 
 	}
 }
