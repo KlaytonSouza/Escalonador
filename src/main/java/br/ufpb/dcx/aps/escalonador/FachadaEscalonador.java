@@ -147,4 +147,8 @@ public class FachadaEscalonador {
 		this.processoParaSerRetomado = nomeProcesso;
 
 	}
+
+	public void adicionarProcessoTempoFixo(String string, int duracao) {
+		
+	}
 }
