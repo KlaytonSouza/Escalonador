@@ -12,7 +12,6 @@ public class FachadaEscalonador {
 	private int controlador;
 	private Queue<String> listaProcesso;
 	private ArrayList<String> processoBloqueado;
-//private ArrayList<String> temp;
 	private String rodando;
 	private String processoParaSerFinalizado;
 	private String processoParaSerBloqueado;
@@ -21,11 +20,10 @@ public class FachadaEscalonador {
 	public FachadaEscalonador(TipoEscalonador tipoEscalonador) {
 		this.quantum = 3;
 		this.tick = 0;
-// this.rodando = "";
 		this.tipoEscalonador = tipoEscalonador;
 		this.listaProcesso = new LinkedList<String>();
 		this.processoBloqueado = new ArrayList<String>();
-//this.temp = new ArrayList<String>();
+
 	}
 
 	public FachadaEscalonador(TipoEscalonador roundrobin, int quantum) {
@@ -57,9 +55,14 @@ public class FachadaEscalonador {
 			resultado += "Fila: " + this.listaProcesso.toString();
 
 		}
-		if (processoBloqueado.size() > 0) {
-			resultado += ", Bloqueados: " + this.processoBloqueado.toString();
+		if (processoBloqueado.size() > 0)/* && listaProcesso.size()>0 ) */ {
+			if (listaProcesso.size() > 0) {
+				resultado += ", Bloqueados: " + this.processoBloqueado.toString();
+			} else {
+				resultado += "Bloqueados: " + this.processoBloqueado.toString();
+			}
 		}
+
 		resultado += "};Quantum: " + this.quantum + ";";
 
 		resultado += "Tick: " + this.tick;
@@ -67,6 +70,15 @@ public class FachadaEscalonador {
 		return resultado;
 	}
 
+	public TipoEscalonador getTipoEscalonador() {
+		return tipoEscalonador;
+	}
+
+	public void setTipoEscalonador(TipoEscalonador tipoEscalonador) {
+		this.tipoEscalonador = tipoEscalonador;
+	}
+
+	
 	public void tick() {
 		this.tick++;
 		if (this.controlador > 0 && (this.controlador + this.quantum) == this.tick) {
@@ -127,14 +139,23 @@ public class FachadaEscalonador {
 	}
 
 	public void adicionarProcesso(String nomeProcesso) {
+		if (listaProcesso.contains(nomeProcesso)) {
+			throw new EscalonadorException();
+		}
 		this.listaProcesso.add(nomeProcesso);
 
 	}
 
 	public void adicionarProcesso(String nomeProcesso, int prioridade) {
+		if (listaProcesso.contains(nomeProcesso)) {
+			throw new EscalonadorException();
+		}
+		this.listaProcesso.add(nomeProcesso);
+		
 	}
 
 	public void finalizarProcesso(String nomeProcesso) {
+
 		this.processoParaSerFinalizado = nomeProcesso;
 
 	}
