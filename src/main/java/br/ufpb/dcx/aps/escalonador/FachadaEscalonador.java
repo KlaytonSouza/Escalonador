@@ -26,6 +26,9 @@ public class FachadaEscalonador {
 	protected String processoParaSerRetomado;
 
 	public FachadaEscalonador(TipoEscalonador tipoEscalonador) {
+		if(tipoEscalonador == null) {
+			throw new EscalonadorException();
+		}
 		this.quantum = 3;
 		this.tick = 0;
 		this.tipoEscalonador = tipoEscalonador;
@@ -34,6 +37,10 @@ public class FachadaEscalonador {
 	}
 
 	public FachadaEscalonador(TipoEscalonador roundrobin, int quantum) {
+		if(quantum <= 0) {
+			throw new EscalonadorException();
+		}
+		
 		this.quantum = quantum;
 		this.tick = 0;
 		this.tipoEscalonador = roundrobin;
@@ -184,7 +191,15 @@ public class FachadaEscalonador {
 	}
 
 	public void adicionarProcesso(String nomeProcesso) {
-		// e a execption
+		
+		if(nomeProcesso == null) {
+			throw new EscalonadorException();
+		}
+		if (listaProcesso.contains(nomeProcesso)) {
+			throw new EscalonadorException();
+
+		}
+		
 
 		if (tipoEscalonador == TipoEscalonador.MaisCurtoPrimeiro) {
 			throw new EscalonadorException();
@@ -194,7 +209,9 @@ public class FachadaEscalonador {
 	}
 
 	public void adicionarProcesso(String nomeProcesso, int prioridade) {
-//e a execption
+		if (tipoEscalonador == TipoEscalonador.RoundRobin) {
+			throw new EscalonadorException();
+		}
 		if (tipoEscalonador == TipoEscalonador.MaisCurtoPrimeiro) {
 			throw new EscalonadorException();
 		}
@@ -202,15 +219,27 @@ public class FachadaEscalonador {
 	}
 
 	public void finalizarProcesso(String nomeProcesso) {
+		if(!listaProcesso.contains(nomeProcesso) && rodando == null) {
+			throw new EscalonadorException();
+		}
 		this.processoParaSerFinalizado = nomeProcesso;
 
 	}
 
 	public void bloquearProcesso(String nomeProcesso) {
+		if(!listaProcesso.contains(nomeProcesso) && rodando == null) {
+			throw new EscalonadorException();
+		}
+		if(rodando != nomeProcesso) {
+			throw new EscalonadorException();
+		}
 		this.processoParaSerBloqueado = nomeProcesso;
 	}
 
 	public void retomarProcesso(String nomeProcesso) {
+		if(!processoBloqueado.contains(nomeProcesso)) {
+			throw new EscalonadorException();
+		}
 		processoRetomado.add(nomeProcesso);
 
 	}
