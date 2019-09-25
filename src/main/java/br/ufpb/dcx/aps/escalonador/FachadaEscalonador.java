@@ -31,7 +31,6 @@ public class FachadaEscalonador {
 		this.tipoEscalonador = tipoEscalonador;
 		this.listaProcesso = new LinkedList<String>();
 		this.processoBloqueado = new ArrayList<String>();
-
 	}
 
 	public FachadaEscalonador(TipoEscalonador roundrobin, int quantum) {
@@ -172,6 +171,8 @@ public class FachadaEscalonador {
 	}
 
 	public void adicionarProcesso(String nomeProcesso) {
+		//e a execption
+
 		if(tipoEscalonador == TipoEscalonador.MaisCurtoPrimeiro) {
 			throw new EscalonadorException();
 		}
@@ -180,6 +181,7 @@ public class FachadaEscalonador {
 	}
 
 	public void adicionarProcesso(String nomeProcesso, int prioridade) {
+//e a execption
 		if(tipoEscalonador == TipoEscalonador.MaisCurtoPrimeiro) {
 			throw new EscalonadorException();
 		}
@@ -265,3 +267,4 @@ public class FachadaEscalonador {
 	}
 
 }
+
