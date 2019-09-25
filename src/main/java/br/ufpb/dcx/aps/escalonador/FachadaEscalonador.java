@@ -31,6 +31,7 @@ public class FachadaEscalonador {
 		this.tipoEscalonador = tipoEscalonador;
 		this.listaProcesso = new LinkedList<String>();
 		this.processoBloqueado = new ArrayList<String>();
+		
 	}
 
 	public FachadaEscalonador(TipoEscalonador roundrobin, int quantum) {
